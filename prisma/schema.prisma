@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  groomName   String
+  brideName   String
+  groomParent String?
+  brideParent String?
+  eventDate   DateTime
+  eventTime   String
+  venue       String
+  mapsUrl     String?
+  coverImage  String?
+  musicUrl    String?
+  theme       String    @default("elegant")
+  createdAt   DateTime  @default(now())
+  galleries   Gallery[]
+  wishes      Wish[]
+}
+
+model Gallery {
+  id           String     @id @default(cuid())
+  imageUrl     String
+  invitationId String
+  createdAt    DateTime   @default(now())
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+}
+
+model Wish {
+  id           String     @id @default(cuid())
+  guestName    String
+  message      String
+  attendance   String?
+  invitationId String
+  createdAt    DateTime   @default(now())
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+}
